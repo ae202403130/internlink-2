@@ -1,2 +1,42 @@
-import {useEffect,useState} from "react";import api from "../../api";import Page from "../../components/Page";
-export default function Applications(){const [r,setR]=useState([]);useEffect(() => { void (api.get("/admin/applications").then(x=>setR(x.data))); },[]);return <Page eyebrow="Administration" title="Application Records"><div className="panel table-wrap"><table><thead><tr><th>Student</th><th>Position</th><th>Employer</th><th>Status</th><th>Applied</th></tr></thead><tbody>{r.map(x=><tr key={x.id}><td>{x.first_name} {x.last_name}<small>{x.email}</small></td><td>{x.title}</td><td>{x.company_name}</td><td><span className={`status ${x.status}`}>{x.status}</span></td><td>{new Date(x.applied_at).toLocaleDateString()}</td></tr>)}</tbody></table></div></Page>}
+import { useEffect, useState } from "react";
+import api from "../../api";
+import Page from "../../components/Page";
+export default function Applications() {
+  const [r, setR] = useState([]);
+  useEffect(() => {
+    void api.get("/admin/applications").then((x) => setR(x.data));
+  }, []);
+  return (
+    <Page eyebrow="Administration" title="Application Records">
+      <div className="panel table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Student</th>
+              <th>Position</th>
+              <th>Employer</th>
+              <th>Status</th>
+              <th>Applied</th>
+            </tr>
+          </thead>
+          <tbody>
+            {r.map((x) => (
+              <tr key={x.id}>
+                <td>
+                  {x.first_name} {x.last_name}
+                  <small>{x.email}</small>
+                </td>
+                <td>{x.title}</td>
+                <td>{x.company_name}</td>
+                <td>
+                  <span className={`status ${x.status}`}>{x.status}</span>
+                </td>
+                <td>{new Date(x.applied_at).toLocaleDateString()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Page>
+  );
+}

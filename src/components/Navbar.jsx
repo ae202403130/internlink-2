@@ -1,2 +1,30 @@
-import {useNavigate} from "react-router-dom";
-export default function Navbar({user,onMenu}){const nav=useNavigate();const logout=()=>{localStorage.clear();nav("/login")};return <header className="topbar"><button className="mobile-menu" onClick={onMenu}>☰</button><div className="brand-mini"><div className="brand-mark">W</div><div><b>WMSU</b><span>InternLink</span></div></div><div className="top-right"><span className="user-chip">{user?.firstName} {user?.lastName}</span><button className="btn btn-light" onClick={logout}>Logout</button></div></header>}
+import { useNavigate } from "react-router-dom";
+export default function Navbar({ user, onMenu }) {
+  const nav = useNavigate();
+  const logout = () => {
+    localStorage.clear();
+    nav("/login");
+  };
+  return (
+    <header className="topbar">
+      <button className="mobile-menu" onClick={onMenu}>
+        ☰
+      </button>
+      <div className="brand-mini">
+        <div className="brand-mark">W</div>
+        <div>
+          <b>WMSU</b>
+          <span>InternLink</span>
+        </div>
+      </div>
+      <div className="top-right">
+        <span className="user-chip">
+          {user?.firstName} {user?.lastName}
+        </span>
+        <button className="btn btn-light" onClick={logout}>
+          Logout
+        </button>
+      </div>
+    </header>
+  );
+}

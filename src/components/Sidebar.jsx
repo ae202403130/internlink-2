@@ -1,5 +1,49 @@
-import {NavLink} from "react-router-dom";
-const menus={student:[["/student","Dashboard"],["/student/internships","Internships"],["/student/applications","Applications"],["/student/profile","Profile"],["/student/notifications","Notifications"]],
-employer:[["/employer","Dashboard"],["/employer/jobs","Job Postings"],["/employer/applicants","Applicants"],["/employer/profile","Company Profile"],["/employer/notifications","Notifications"]],
-admin:[["/admin","Dashboard"],["/admin/users","Users"],["/admin/employers","Employers"],["/admin/jobs","Job Approvals"],["/admin/applications","Applications"],["/admin/categories","Categories & Courses"],["/admin/announcements","Announcements"],["/admin/reports","Reports"]]};
-export default function Sidebar({role,open}){return <aside className={`sidebar ${open?"show":""}`}><div className="side-title">{role==="student"?"Student Portal":role==="employer"?"Employer Portal":"Admin Portal"}</div>{menus[role].map(([to,label])=><NavLink end={to==="/student"||to==="/employer"||to==="/admin"} to={to} key={to}>{label}</NavLink>)}</aside>}
+import { NavLink } from "react-router-dom";
+const menus = {
+  student: [
+    ["/student", "Dashboard"],
+    ["/student/internships", "Internships"],
+    ["/student/applications", "Applications"],
+    ["/student/profile", "Profile"],
+    ["/student/notifications", "Notifications"],
+  ],
+  employer: [
+    ["/employer", "Dashboard"],
+    ["/employer/jobs", "Job Postings"],
+    ["/employer/applicants", "Applicants"],
+    ["/employer/profile", "Company Profile"],
+    ["/employer/notifications", "Notifications"],
+  ],
+  admin: [
+    ["/admin", "Dashboard"],
+    ["/admin/users", "Users"],
+    ["/admin/employers", "Employers"],
+    ["/admin/jobs", "Job Approvals"],
+    ["/admin/applications", "Applications"],
+    ["/admin/categories", "Categories & Courses"],
+    ["/admin/announcements", "Announcements"],
+    ["/admin/reports", "Reports"],
+  ],
+};
+export default function Sidebar({ role, open }) {
+  return (
+    <aside className={`sidebar ${open ? "show" : ""}`}>
+      <div className="side-title">
+        {role === "student"
+          ? "Student Portal"
+          : role === "employer"
+            ? "Employer Portal"
+            : "Admin Portal"}
+      </div>
+      {menus[role].map(([to, label]) => (
+        <NavLink
+          end={to === "/student" || to === "/employer" || to === "/admin"}
+          to={to}
+          key={to}
+        >
+          {label}
+        </NavLink>
+      ))}
+    </aside>
+  );
+}

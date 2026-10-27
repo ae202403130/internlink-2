@@ -1,1 +1,16 @@
-export default function SearchBar({value,onChange,placeholder="Search..."}){return <label className="search"><span>⌕</span><input value={value} onChange={e=>onChange(e.target.value)} placeholder={placeholder}/></label>}
+export default function SearchBar({
+  value,
+  onChange,
+  placeholder = "Search...",
+}) {
+  return (
+    <label className="search">
+      <span>⌕</span>
+      <input
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+      />
+    </label>
+  );
+}

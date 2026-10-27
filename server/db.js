@@ -30,7 +30,8 @@ export function poolConfig(env = process.env) {
       ? { rejectUnauthorized: env.DB_SSL_REJECT_UNAUTHORIZED !== "false" }
       : undefined;
 
-  if (env.DATABASE_URL) return { ...base, connectionString: env.DATABASE_URL, ssl };
+  if (env.DATABASE_URL)
+    return { ...base, connectionString: env.DATABASE_URL, ssl };
 
   return {
     ...base,
@@ -47,7 +48,9 @@ export const pool = new Pool(poolConfig());
 
 // Without this listener an error on an idle client (e.g. the DB restarts) is an
 // unhandled 'error' event and crashes the whole Node process.
-pool.on("error", (err) => console.error("[db] idle client error:", err.message));
+pool.on("error", (err) =>
+  console.error("[db] idle client error:", err.message),
+);
 
 /** Run a single query. Returns the pg Result ({ rows, rowCount }). */
 export const query = (text, params) => pool.query(text, params);
@@ -77,16 +80,22 @@ export async function withTransaction(fn) {
 
 /** Startup check: can we connect, and has the schema been created? */
 export async function checkDatabase() {
-  const { rows } = await pool.query("SELECT to_regclass('public.users') AS users_table");
+  const { rows } = await pool.query(
+    "SELECT to_regclass('public.users') AS users_table",
+  );
   return { schemaReady: rows[0].users_table !== null };
 }
 
 /** Turn low-level driver errors into something a student can act on. */
 export function describeDbError(err) {
   const msg = err?.message || String(err);
-  if (err?.code === "ECONNREFUSED") return "PostgreSQL refused the connection. Is the server running, and are DB_HOST / DB_PORT correct?";
-  if (err?.code === "28P01") return "PostgreSQL rejected the username or password. Check DB_USER / DB_PASSWORD in .env.";
-  if (err?.code === "3D000") return `Database "${process.env.DB_NAME || "backend-db"}" does not exist. Run: npm run db:setup`;
-  if (/password must be a string/i.test(msg)) return "PostgreSQL requires a password. Set DB_PASSWORD in .env.";
+  if (err?.code === "ECONNREFUSED")
+    return "PostgreSQL refused the connection. Is the server running, and are DB_HOST / DB_PORT correct?";
+  if (err?.code === "28P01")
+    return "PostgreSQL rejected the username or password. Check DB_USER / DB_PASSWORD in .env.";
+  if (err?.code === "3D000")
+    return `Database "${process.env.DB_NAME || "backend-db"}" does not exist. Run: npm run db:setup`;
+  if (/password must be a string/i.test(msg))
+    return "PostgreSQL requires a password. Set DB_PASSWORD in .env.";
   return msg;
 }

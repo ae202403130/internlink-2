@@ -1,2 +1,62 @@
-import {useEffect,useState} from "react";import api from "../../api";import Page from "../../components/Page";
-export default function Reports(){const [d,setD]=useState(null);useEffect(() => { void (api.get("/admin/stats").then(x=>setD(x.data))); },[]);const csv=()=>{const rows=[["Metric","Value"],["Users",d.users.total],["Students",d.users.students||0],["Employers",d.users.employers||0],["Jobs",d.jobs.total],["Pending Jobs",d.jobs.pending||0],["Published Jobs",d.jobs.published||0],["Applications",d.applications.total],["Accepted",d.applications.accepted||0]];const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([rows.map(x=>x.join(",")).join("\n")],{type:"text/csv"}));a.download="internlink-report.csv";a.click()};return <Page eyebrow="Administration" title="Reports & Analytics" action={<button className="btn btn-primary" onClick={csv}>Export CSV</button>}>{d?<div className="stats"><div><span>Users</span><b>{d.users.total}</b></div><div><span>Jobs</span><b>{d.jobs.total}</b></div><div><span>Applications</span><b>{d.applications.total}</b></div><div><span>Accepted</span><b>{d.applications.accepted||0}</b></div></div>:<p>Loading...</p>}</Page>}
+import { useEffect, useState } from "react";
+import api from "../../api";
+import Page from "../../components/Page";
+export default function Reports() {
+  const [d, setD] = useState(null);
+  useEffect(() => {
+    void api.get("/admin/stats").then((x) => setD(x.data));
+  }, []);
+  const csv = () => {
+    const rows = [
+      ["Metric", "Value"],
+      ["Users", d.users.total],
+      ["Students", d.users.students || 0],
+      ["Employers", d.users.employers || 0],
+      ["Jobs", d.jobs.total],
+      ["Pending Jobs", d.jobs.pending || 0],
+      ["Published Jobs", d.jobs.published || 0],
+      ["Applications", d.applications.total],
+      ["Accepted", d.applications.accepted || 0],
+    ];
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(
+      new Blob([rows.map((x) => x.join(",")).join("\n")], { type: "text/csv" }),
+    );
+    a.download = "internlink-report.csv";
+    a.click();
+  };
+  return (
+    <Page
+      eyebrow="Administration"
+      title="Reports & Analytics"
+      action={
+        <button className="btn btn-primary" onClick={csv}>
+          Export CSV
+        </button>
+      }
+    >
+      {d ? (
+        <div className="stats">
+          <div>
+            <span>Users</span>
+            <b>{d.users.total}</b>
+          </div>
+          <div>
+            <span>Jobs</span>
+            <b>{d.jobs.total}</b>
+          </div>
+          <div>
+            <span>Applications</span>
+            <b>{d.applications.total}</b>
+          </div>
+          <div>
+            <span>Accepted</span>
+            <b>{d.applications.accepted || 0}</b>
+          </div>
+        </div>
+      ) : (
+        <p>Loading...</p>
+      )}
+    </Page>
+  );
+}

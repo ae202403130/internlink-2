@@ -24,13 +24,19 @@ async function ensureDatabaseExists() {
   if (!dbName) return; // DATABASE_URL points at a database that already exists (hosted Postgres)
   if (!/^[A-Za-z0-9][A-Za-z0-9_-]*$/.test(dbName)) {
     throw new Error(
-      `DB_NAME "${dbName}" must start with a letter or number and contain only letters, numbers, underscores, or hyphens.`
+      `DB_NAME "${dbName}" must start with a letter or number and contain only letters, numbers, underscores, or hyphens.`,
     );
   }
-  const admin = new pg.Client({ ...config, database: process.env.DB_ADMIN_DATABASE || "postgres" });
+  const admin = new pg.Client({
+    ...config,
+    database: process.env.DB_ADMIN_DATABASE || "postgres",
+  });
   await admin.connect();
   try {
-    const { rowCount } = await admin.query("SELECT 1 FROM pg_database WHERE datname = $1", [dbName]);
+    const { rowCount } = await admin.query(
+      "SELECT 1 FROM pg_database WHERE datname = $1",
+      [dbName],
+    );
     if (!rowCount) {
       await admin.query(`CREATE DATABASE "${dbName}"`);
       console.log(`Created database "${dbName}".`);
@@ -48,13 +54,17 @@ async function main() {
   const client = new pg.Client(config);
   await client.connect();
   try {
-    const { rows } = await client.query("SELECT to_regclass('public.users') AS t");
+    const { rows } = await client.query(
+      "SELECT to_regclass('public.users') AS t",
+    );
     if (rows[0].t && !force) {
-      const { rows: count } = await client.query("SELECT COUNT(*)::int AS n FROM users");
+      const { rows: count } = await client.query(
+        "SELECT COUNT(*)::int AS n FROM users",
+      );
       if (count[0].n > 0) {
         console.error(
           `\nThe database already contains ${count[0].n} user(s). Running setup would DELETE all existing data.\n` +
-            "Re-run with --force if that is what you want:  npm run db:setup -- --force"
+            "Re-run with --force if that is what you want:  npm run db:setup -- --force",
         );
         process.exitCode = 1;
         return;

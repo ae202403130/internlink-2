@@ -1,2 +1,84 @@
-import {useEffect,useState} from "react";import {Link,useParams} from "react-router-dom";import api from "../../api";import Modal from "../../components/Modal";
-export default function JobDetails(){const {id}=useParams();const [j,setJ]=useState(null),[open,setOpen]=useState(false),[letter,setLetter]=useState(""),[file,setFile]=useState(null),[msg,setMsg]=useState("");useEffect(() => { void (api.get(`/jobs/${id}`).then(r=>setJ(r.data))); },[id]);if(!j)return <div className="page">Loading...</div>;const apply=async()=>{const fd=new FormData();fd.append("jobId",id);fd.append("coverLetter",letter);if(file)fd.append("resume",file);try{const r=await api.post("/applications",fd);setMsg(r.data.message);setOpen(false)}catch(e){setMsg(e.response?.data?.message||"Application failed.")}};return <div className="page"><Link to="/student/internships">← Back</Link>{msg&&<div className="success">{msg}</div>}<section className="panel detail"><span className="tag">{j.type}</span><h1>{j.title}</h1><h3>{j.company_name}</h3><div className="job-meta"><span>⌖ {j.location}</span><span>▣ {j.course}</span><span>◷ {j.slots} slots</span><span>Deadline: {j.deadline}</span></div><hr/><h2>Opportunity</h2><p>{j.description}</p><h2>Employer</h2><p>{j.company_description}</p><button className="btn btn-primary" onClick={()=>setOpen(true)}>Apply Now</button></section><Modal open={open} title="Submit Application" onClose={()=>setOpen(false)}><label>Cover Letter<textarea rows="5" value={letter} onChange={e=>setLetter(e.target.value)}/></label><label>Résumé<input type="file" accept=".pdf,.doc,.docx" onChange={e=>setFile(e.target.files?.[0])}/></label><div className="modal-actions"><button className="btn btn-light" onClick={()=>setOpen(false)}>Cancel</button><button className="btn btn-primary" onClick={apply}>Submit</button></div></Modal></div>}
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import api from "../../api";
+import Modal from "../../components/Modal";
+export default function JobDetails() {
+  const { id } = useParams();
+  const [j, setJ] = useState(null),
+    [open, setOpen] = useState(false),
+    [letter, setLetter] = useState(""),
+    [file, setFile] = useState(null),
+    [msg, setMsg] = useState("");
+  useEffect(() => {
+    void api.get(`/jobs/${id}`).then((r) => setJ(r.data));
+  }, [id]);
+  if (!j) return <div className="page">Loading...</div>;
+  const apply = async () => {
+    const fd = new FormData();
+    fd.append("jobId", id);
+    fd.append("coverLetter", letter);
+    if (file) fd.append("resume", file);
+    try {
+      const r = await api.post("/applications", fd);
+      setMsg(r.data.message);
+      setOpen(false);
+    } catch (e) {
+      setMsg(e.response?.data?.message || "Application failed.");
+    }
+  };
+  return (
+    <div className="page">
+      <Link to="/student/internships">← Back</Link>
+      {msg && <div className="success">{msg}</div>}
+      <section className="panel detail">
+        <span className="tag">{j.type}</span>
+        <h1>{j.title}</h1>
+        <h3>{j.company_name}</h3>
+        <div className="job-meta">
+          <span>⌖ {j.location}</span>
+          <span>▣ {j.course}</span>
+          <span>◷ {j.slots} slots</span>
+          <span>Deadline: {j.deadline}</span>
+        </div>
+        <hr />
+        <h2>Opportunity</h2>
+        <p>{j.description}</p>
+        <h2>Employer</h2>
+        <p>{j.company_description}</p>
+        <button className="btn btn-primary" onClick={() => setOpen(true)}>
+          Apply Now
+        </button>
+      </section>
+      <Modal
+        open={open}
+        title="Submit Application"
+        onClose={() => setOpen(false)}
+      >
+        <label>
+          Cover Letter
+          <textarea
+            rows="5"
+            value={letter}
+            onChange={(e) => setLetter(e.target.value)}
+          />
+        </label>
+        <label>
+          Résumé
+          <input
+            type="file"
+            accept=".pdf,.doc,.docx"
+            onChange={(e) => setFile(e.target.files?.[0])}
+          />
+        </label>
+        <div className="modal-actions">
+          <button className="btn btn-light" onClick={() => setOpen(false)}>
+            Cancel
+          </button>
+          <button className="btn btn-primary" onClick={apply}>
+            Submit
+          </button>
+        </div>
+      </Modal>
+    </div>
+  );
+}

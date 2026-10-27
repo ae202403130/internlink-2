@@ -1,1 +1,2 @@
-import Notifications from "../student/Notifications";export default Notifications;
+import Notifications from "../student/Notifications";
+export default Notifications;

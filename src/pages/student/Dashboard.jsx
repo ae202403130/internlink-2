@@ -1,2 +1,61 @@
-import {useEffect,useState} from "react";import {Link} from "react-router-dom";import api from "../../api";import NotificationPanel from "../../components/NotificationPanel";import Page from "../../components/Page";
-export default function Dashboard(){const [d,setD]=useState(null);useEffect(() => { void (api.get("/student/dashboard").then(r=>setD(r.data))); },[]);if(!d)return <div className="page">Loading...</div>;return <Page eyebrow="Student Portal" title={`Good day, ${d.student.first_name}!`} description="Track opportunities and manage your career journey." action={<Link className="btn btn-primary" to="/student/internships">Find Opportunities</Link>}><div className="stats"><div><span>Applications</span><b>{d.stats.applications||0}</b></div><div><span>Shortlisted</span><b>{d.stats.shortlisted||0}</b></div><div><span>Accepted</span><b>{d.stats.accepted||0}</b></div><div><span>Profile</span><b>85%</b></div></div><div className="grid-2"><section className="panel"><div className="section-head"><h2>Recent Applications</h2><Link to="/student/applications">View all</Link></div>{d.applications.map(a=><div className="list-row" key={a.id}><div><b>{a.title}</b><span>{a.company_name}</span></div><span className={`status ${a.status}`}>{a.status}</span></div>)}</section><NotificationPanel items={d.notifications}/></div></Page>}
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import api from "../../api";
+import NotificationPanel from "../../components/NotificationPanel";
+import Page from "../../components/Page";
+export default function Dashboard() {
+  const [d, setD] = useState(null);
+  useEffect(() => {
+    void api.get("/student/dashboard").then((r) => setD(r.data));
+  }, []);
+  if (!d) return <div className="page">Loading...</div>;
+  return (
+    <Page
+      eyebrow="Student Portal"
+      title={`Good day, ${d.student.first_name}!`}
+      description="Track opportunities and manage your career journey."
+      action={
+        <Link className="btn btn-primary" to="/student/internships">
+          Find Opportunities
+        </Link>
+      }
+    >
+      <div className="stats">
+        <div>
+          <span>Applications</span>
+          <b>{d.stats.applications || 0}</b>
+        </div>
+        <div>
+          <span>Shortlisted</span>
+          <b>{d.stats.shortlisted || 0}</b>
+        </div>
+        <div>
+          <span>Accepted</span>
+          <b>{d.stats.accepted || 0}</b>
+        </div>
+        <div>
+          <span>Profile</span>
+          <b>85%</b>
+        </div>
+      </div>
+      <div className="grid-2">
+        <section className="panel">
+          <div className="section-head">
+            <h2>Recent Applications</h2>
+            <Link to="/student/applications">View all</Link>
+          </div>
+          {d.applications.map((a) => (
+            <div className="list-row" key={a.id}>
+              <div>
+                <b>{a.title}</b>
+                <span>{a.company_name}</span>
+              </div>
+              <span className={`status ${a.status}`}>{a.status}</span>
+            </div>
+          ))}
+        </section>
+        <NotificationPanel items={d.notifications} />
+      </div>
+    </Page>
+  );
+}

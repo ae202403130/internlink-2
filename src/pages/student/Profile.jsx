@@ -1,2 +1,125 @@
-import {useEffect,useState} from "react";import api from "../../api";import Page from "../../components/Page";
-export default function Profile(){const [f,setF]=useState(null),[msg,setMsg]=useState("");useEffect(() => { void (api.get("/student/profile").then(r=>setF(r.data))); },[]);if(!f)return <div className="page">Loading...</div>;const set=(k,v)=>setF({...f,[k]:v});const save=async e=>{e.preventDefault();const r=await api.put("/student/profile",{firstName:f.first_name,lastName:f.last_name,studentNo:f.student_no,course:f.course,yearLevel:f.year_level,phone:f.phone,address:f.address,bio:f.bio,skills:f.skills});setMsg(r.data.message)};const resume=async e=>{if(!e.target.files[0])return;const fd=new FormData();fd.append("resume",e.target.files[0]);const r=await api.post("/student/resume",fd);setMsg(r.data.message)};return <Page eyebrow="Student Portal" title="My Profile" description="Keep your information and résumé up to date.">{msg&&<div className="success">{msg}</div>}<form className="panel form-grid" onSubmit={save}><h2>Personal Information</h2><div className="two"><label>First Name<input value={f.first_name} onChange={e=>set("first_name",e.target.value)}/></label><label>Last Name<input value={f.last_name} onChange={e=>set("last_name",e.target.value)}/></label></div><label>Email<input disabled value={f.email}/></label><div className="two"><label>Student No.<input value={f.student_no||""} onChange={e=>set("student_no",e.target.value)}/></label><label>Phone<input value={f.phone||""} onChange={e=>set("phone",e.target.value)}/></label></div><div className="two"><label>Course<input value={f.course||""} onChange={e=>set("course",e.target.value)}/></label><label>Year Level<input value={f.year_level||""} onChange={e=>set("year_level",e.target.value)}/></label></div><label>Address<input value={f.address||""} onChange={e=>set("address",e.target.value)}/></label><label>Bio<textarea rows="3" value={f.bio||""} onChange={e=>set("bio",e.target.value)}/></label><label>Skills<input value={f.skills||""} onChange={e=>set("skills",e.target.value)}/></label><label>Résumé Upload<input type="file" accept=".pdf,.doc,.docx" onChange={resume}/></label><button className="btn btn-primary">Save Profile</button></form></Page>}
+import { useEffect, useState } from "react";
+import api from "../../api";
+import Page from "../../components/Page";
+export default function Profile() {
+  const [f, setF] = useState(null),
+    [msg, setMsg] = useState("");
+  useEffect(() => {
+    void api.get("/student/profile").then((r) => setF(r.data));
+  }, []);
+  if (!f) return <div className="page">Loading...</div>;
+  const set = (k, v) => setF({ ...f, [k]: v });
+  const save = async (e) => {
+    e.preventDefault();
+    const r = await api.put("/student/profile", {
+      firstName: f.first_name,
+      lastName: f.last_name,
+      studentNo: f.student_no,
+      course: f.course,
+      yearLevel: f.year_level,
+      phone: f.phone,
+      address: f.address,
+      bio: f.bio,
+      skills: f.skills,
+    });
+    setMsg(r.data.message);
+  };
+  const resume = async (e) => {
+    if (!e.target.files[0]) return;
+    const fd = new FormData();
+    fd.append("resume", e.target.files[0]);
+    const r = await api.post("/student/resume", fd);
+    setMsg(r.data.message);
+  };
+  return (
+    <Page
+      eyebrow="Student Portal"
+      title="My Profile"
+      description="Keep your information and résumé up to date."
+    >
+      {msg && <div className="success">{msg}</div>}
+      <form className="panel form-grid" onSubmit={save}>
+        <h2>Personal Information</h2>
+        <div className="two">
+          <label>
+            First Name
+            <input
+              value={f.first_name}
+              onChange={(e) => set("first_name", e.target.value)}
+            />
+          </label>
+          <label>
+            Last Name
+            <input
+              value={f.last_name}
+              onChange={(e) => set("last_name", e.target.value)}
+            />
+          </label>
+        </div>
+        <label>
+          Email
+          <input disabled value={f.email} />
+        </label>
+        <div className="two">
+          <label>
+            Student No.
+            <input
+              value={f.student_no || ""}
+              onChange={(e) => set("student_no", e.target.value)}
+            />
+          </label>
+          <label>
+            Phone
+            <input
+              value={f.phone || ""}
+              onChange={(e) => set("phone", e.target.value)}
+            />
+          </label>
+        </div>
+        <div className="two">
+          <label>
+            Course
+            <input
+              value={f.course || ""}
+              onChange={(e) => set("course", e.target.value)}
+            />
+          </label>
+          <label>
+            Year Level
+            <input
+              value={f.year_level || ""}
+              onChange={(e) => set("year_level", e.target.value)}
+            />
+          </label>
+        </div>
+        <label>
+          Address
+          <input
+            value={f.address || ""}
+            onChange={(e) => set("address", e.target.value)}
+          />
+        </label>
+        <label>
+          Bio
+          <textarea
+            rows="3"
+            value={f.bio || ""}
+            onChange={(e) => set("bio", e.target.value)}
+          />
+        </label>
+        <label>
+          Skills
+          <input
+            value={f.skills || ""}
+            onChange={(e) => set("skills", e.target.value)}
+          />
+        </label>
+        <label>
+          Résumé Upload
+          <input type="file" accept=".pdf,.doc,.docx" onChange={resume} />
+        </label>
+        <button className="btn btn-primary">Save Profile</button>
+      </form>
+    </Page>
+  );
+}

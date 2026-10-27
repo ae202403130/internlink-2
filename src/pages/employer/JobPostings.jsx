@@ -1,3 +1,186 @@
-import {useEffect,useState} from "react";import api from "../../api";import Modal from "../../components/Modal";import Page from "../../components/Page";
-const blank={title:"",description:"",location:"",course:"Computer Science",type:"Internship",slots:1,deadline:""};
-export default function JobPostings(){const [rows,setRows]=useState([]),[f,setF]=useState(blank),[edit,setEdit]=useState(null),[msg,setMsg]=useState("");const load=()=>api.get("/employer/jobs").then(r=>setRows(r.data));useEffect(() => { void load(); },[]);const set=(k,v)=>setF({...f,[k]:v});const save=async e=>{e.preventDefault();try{const r=edit?await api.put(`/employer/jobs/${edit}`,f):await api.post("/employer/jobs",f);setMsg(r.data.message);setEdit(null);setF(blank);load()}catch(e){setMsg(e.response?.data?.message||"Save failed.")}};const close=async id=>{if(confirm("Close this posting?")){const r=await api.delete(`/employer/jobs/${id}`);setMsg(r.data.message);load()}};return <Page eyebrow="Employer Portal" title="Job Postings" action={<button className="btn btn-primary" onClick={()=>{setEdit(0);setF(blank)}}>+ Add Internship</button>}>{msg&&<div className="success">{msg}</div>}<div className="panel table-wrap"><table><thead><tr><th>Position</th><th>Course</th><th>Deadline</th><th>Status</th><th>Actions</th></tr></thead><tbody>{rows.map(x=><tr key={x.id}><td><b>{x.title}</b><small>{x.location}</small></td><td>{x.course}</td><td>{x.deadline}</td><td><span className={`status ${x.status}`}>{x.status}</span></td><td><button className="link-btn" onClick={()=>{setEdit(x.id);setF(x)}}>Edit</button>{x.status!=="closed"&&<button className="link-btn danger" onClick={()=>close(x.id)}>Close</button>}</td></tr>)}</tbody></table></div><Modal open={edit!==null} title={edit?"Edit Internship":"Create Internship"} onClose={()=>setEdit(null)}><form onSubmit={save} className="form-grid"><label>Title<input required value={f.title} onChange={e=>set("title",e.target.value)}/></label><label>Description<textarea required rows="4" value={f.description} onChange={e=>set("description",e.target.value)}/></label><div className="two"><label>Location<input required value={f.location} onChange={e=>set("location",e.target.value)}/></label><label>Course<input required value={f.course} onChange={e=>set("course",e.target.value)}/></label></div><div className="two"><label>Type<select value={f.type} onChange={e=>set("type",e.target.value)}><option>Internship</option><option>OJT</option><option>Part-time</option></select></label><label>Slots<input type="number" min="1" value={f.slots} onChange={e=>set("slots",e.target.value)}/></label></div><label>Deadline<input required type="date" value={String(f.deadline).slice(0,10)} onChange={e=>set("deadline",e.target.value)}/></label><button className="btn btn-primary">Save & Submit</button></form></Modal></Page>}
+import { useEffect, useState } from "react";
+import api from "../../api";
+import Modal from "../../components/Modal";
+import Page from "../../components/Page";
+const blank = {
+  title: "",
+  description: "",
+  location: "",
+  course: "Computer Science",
+  type: "Internship",
+  slots: 1,
+  deadline: "",
+};
+export default function JobPostings() {
+  const [rows, setRows] = useState([]),
+    [f, setF] = useState(blank),
+    [edit, setEdit] = useState(null),
+    [msg, setMsg] = useState("");
+  const load = () => api.get("/employer/jobs").then((r) => setRows(r.data));
+  useEffect(() => {
+    void load();
+  }, []);
+  const set = (k, v) => setF({ ...f, [k]: v });
+  const save = async (e) => {
+    e.preventDefault();
+    try {
+      const r = edit
+        ? await api.put(`/employer/jobs/${edit}`, f)
+        : await api.post("/employer/jobs", f);
+      setMsg(r.data.message);
+      setEdit(null);
+      setF(blank);
+      load();
+    } catch (e) {
+      setMsg(e.response?.data?.message || "Save failed.");
+    }
+  };
+  const close = async (id) => {
+    if (confirm("Close this posting?")) {
+      const r = await api.delete(`/employer/jobs/${id}`);
+      setMsg(r.data.message);
+      load();
+    }
+  };
+  return (
+    <Page
+      eyebrow="Employer Portal"
+      title="Job Postings"
+      action={
+        <button
+          className="btn btn-primary"
+          onClick={() => {
+            setEdit(0);
+            setF(blank);
+          }}
+        >
+          + Add Internship
+        </button>
+      }
+    >
+      {msg && <div className="success">{msg}</div>}
+      <div className="panel table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Position</th>
+              <th>Course</th>
+              <th>Deadline</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((x) => (
+              <tr key={x.id}>
+                <td>
+                  <b>{x.title}</b>
+                  <small>{x.location}</small>
+                </td>
+                <td>{x.course}</td>
+                <td>{x.deadline}</td>
+                <td>
+                  <span className={`status ${x.status}`}>{x.status}</span>
+                </td>
+                <td>
+                  <button
+                    className="link-btn"
+                    onClick={() => {
+                      setEdit(x.id);
+                      setF(x);
+                    }}
+                  >
+                    Edit
+                  </button>
+                  {x.status !== "closed" && (
+                    <button
+                      className="link-btn danger"
+                      onClick={() => close(x.id)}
+                    >
+                      Close
+                    </button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <Modal
+        open={edit !== null}
+        title={edit ? "Edit Internship" : "Create Internship"}
+        onClose={() => setEdit(null)}
+      >
+        <form onSubmit={save} className="form-grid">
+          <label>
+            Title
+            <input
+              required
+              value={f.title}
+              onChange={(e) => set("title", e.target.value)}
+            />
+          </label>
+          <label>
+            Description
+            <textarea
+              required
+              rows="4"
+              value={f.description}
+              onChange={(e) => set("description", e.target.value)}
+            />
+          </label>
+          <div className="two">
+            <label>
+              Location
+              <input
+                required
+                value={f.location}
+                onChange={(e) => set("location", e.target.value)}
+              />
+            </label>
+            <label>
+              Course
+              <input
+                required
+                value={f.course}
+                onChange={(e) => set("course", e.target.value)}
+              />
+            </label>
+          </div>
+          <div className="two">
+            <label>
+              Type
+              <select
+                value={f.type}
+                onChange={(e) => set("type", e.target.value)}
+              >
+                <option>Internship</option>
+                <option>OJT</option>
+                <option>Part-time</option>
+              </select>
+            </label>
+            <label>
+              Slots
+              <input
+                type="number"
+                min="1"
+                value={f.slots}
+                onChange={(e) => set("slots", e.target.value)}
+              />
+            </label>
+          </div>
+          <label>
+            Deadline
+            <input
+              required
+              type="date"
+              value={String(f.deadline).slice(0, 10)}
+              onChange={(e) => set("deadline", e.target.value)}
+            />
+          </label>
+          <button className="btn btn-primary">Save & Submit</button>
+        </form>
+      </Modal>
+    </Page>
+  );
+}
