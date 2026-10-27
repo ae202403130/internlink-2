@@ -1,0 +1,1 @@
+Optional: place your authorized WMSU logo at public/logo.png. The interface already uses a WMSU-inspired maroon visual system.

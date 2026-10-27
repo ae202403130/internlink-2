@@ -1,0 +1,1 @@
+export default function Button({children,variant="primary",type="button",onClick,disabled}){return <button type={type} disabled={disabled} onClick={onClick} className={`btn btn-${variant}`}>{children}</button>}
